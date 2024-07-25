@@ -12,7 +12,7 @@ const Hero = () => {
               <p className="text-white mt-5 text-center lg:text-start">We are a family owned Mediterranean restaurant, focused on traditional recipes served with a modern twist.</p>
              
               <button className="rounded-full bg-[#F4CE14] lg:px-5 py-3 my-6 text-base font-medium text-black transition duration-200 hover:bg-yellow-600 active:bg-yellow-700 dark:bg-yellow-400 dark:text-white dark:hover:bg-yellow-300 dark:active:bg-yellow-200">
-              <Link to="/booking" className="text-white">Reserve A Table</Link>
+              <Link to="/booking" className="">Reserve A Table</Link>
 </button>
             </div >
               

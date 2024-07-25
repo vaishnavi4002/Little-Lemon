@@ -1,8 +1,8 @@
 // import { useState } from 'react'
 
 import Navbar from "./components/Navbar";
-
-// import About from "./components/About";
+import { Element } from "react-scroll"
+import About from "./components/About";
 import Footer from "./components/Footer";
 import { Route,Routes,BrowserRouter } from 'react-router-dom';
 import HomePage from "./components/HomePage";
@@ -25,7 +25,7 @@ function App() {
       
     </BrowserRouter>
       
-     
+    <Element name="about"><About/></Element>
       <Footer/>
 
       </div>

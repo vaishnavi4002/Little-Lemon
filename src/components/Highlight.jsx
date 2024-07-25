@@ -40,7 +40,10 @@ const Highlight = () => {
   return (
     <div className="m-10 ">
       <h1 className="text-6xl">This Weeks Specials !!</h1>
-        <div className="flex flex-wrap justify-evenly items-center p-8 mt-6">
+      <button className=" bg-[#F4CE14] lg:px-10 mx-10 py-3 mt-8 text-base font-medium text-black transition duration-200 hover:bg-yellow-600 active:bg-yellow-700 dark:bg-yellow-400 dark:text-white dark:hover:bg-yellow-300 dark:active:bg-yellow-200">
+          OUR MENU
+</button>
+        <div className="flex flex-wrap justify-evenly items-center p-8 ">
           
         {dishes.map((dish) => (
     <Card 
@@ -65,7 +68,7 @@ const Highlight = () => {
            <p className="">Order a delivery </p>
            <span className=""><MdDeliveryDining /> </span>
            </div>
-          
+           
         </Typography>
       </CardBody>
       <CardFooter className="pt-0">
