@@ -1,71 +1,62 @@
-
-import React from 'react';
-import { useReducer, useEffect } from 'react';
-import BookingForm from './Booking'; // Adjust the import path if necessary
-import BookingConfirmed from './BookingConfirmed';
-const seededRandom = function (seed) {
-    var m = 2**35 - 31;
-    var a = 185852;
-    var s = seed % m;
-    return function () {
-        return (s = s * a % m) / m;
-    };
-}
-
-const fetchAPI = function(date) {
-    let result = [];
-    let random = seededRandom(new Date(date).getDate());
-
-    for(let i = 17; i <= 23; i++) {
-        if(random() < 0.5) {
-            result.push(i + ':00');
-        }
-        if(random() < 0.5) {
-            result.push(i + ':30');
-        }
-    }
-    return result;
-};
-
-const submitAPI = function(formData) {
-    console.log('Form data submitted:', formData);
-    
-    <BookingConfirmed formdata={formData}/>
-    return true;
-};
-
-const timesReducer = (state, action) => {
-    switch (action.type) {
-        case 'SET_TIMES':
-            return action.payload;
-        default:
-            return state;
-    }
-};
+import React, { useReducer, useEffect } from "react";
+import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
+import Booking from "./Booking";
+import HomePage from "./HomePage";
+import BookingConfirmed from "./BookingConfirmed";
 
 const Main = () => {
-    const [availableTimes, dispatch] = useReducer(timesReducer, []);
 
-    useEffect(() => {
-        const initializeTimes = async () => {
-            const today = new Date().toISOString().split('T')[0]; // Format date as YYYY-MM-DD
-            const times = fetchAPI(today);
-            dispatch({ type: 'SET_TIMES', payload: times });
+    const seededRandom = function (seed) {
+        var m = 2**35 - 31;
+        var a = 185852;
+        var s = seed % m;
+        return function () {
+            return (s = s * a % m) / m;
         };
+    }
 
-        initializeTimes();
-    }, []);
+    const fetchAPI = function(date) {
+        let result = [];
+        let random = seededRandom(date.getDate());
 
-    const updateTimes = async (date) => {
-        const times = fetchAPI(date);
-        dispatch({ type: 'SET_TIMES', payload: times });
+        for(let i = 17; i <= 23; i++) {
+            if(random() < 0.5) {
+                result.push(i + ':00');
+            }
+            if(random() < 0.5) {
+                result.push(i + ':30');
+            }
+        }
+        return result;
     };
 
+    const submitAPI = function(formData) {
+        return true;
+    };
+
+    const initialState = { availableTimes: fetchAPI(new Date()) };
+    const [state, dispatch] = useReducer(updateTimes, initialState);
+
+    function updateTimes(state, date) {
+        return { availableTimes: fetchAPI(new Date(date)) };
+    }
+
+    const navigate = useNavigate();
+    function submitForm(formData) {
+        if (submitAPI(formData)) {
+            navigate("/confirmed");
+        }
+    }
+
     return (
-        <div>
-            <BookingForm availableTimes={availableTimes} updateTimes={updateTimes} submitAPI={submitAPI} />
-        </div>
+        <main className="main">
+            <Routes>
+                <Route path="/" element={<HomePage />} />
+                <Route path="/booking" element={<Booking availableTimes={state.availableTimes} dispatch={dispatch} submitForm={submitForm} />} />
+                <Route path="/confirmed" element={<BookingConfirmed />} />
+            </Routes>
+        </main>
     );
-};
+}
 
 export default Main;

@@ -15,9 +15,7 @@ const Navbar = () => {
         <Link to="/">Home</Link>
         </li>
         <li>
-        <Link to="about" smooth={true}
-            duration={500}
-            className=" cursor-pointer">About</Link>
+        <Link to="/">Menu</Link>
         </li>
         <li>
         <Link to="/">Menu</Link>

@@ -1,62 +1,43 @@
-import { render, screen, waitFor, act } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
+import { BrowserRouter } from 'react-router-dom';
+import App from './App';
 
-import Main from './components/Main'; 
+test('Renders the Header heading', () => {
+  render(
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  );
 
+  const headingElement = screen.getByText("Reserve a Table");
+  expect(headingElement).toBeInTheDocument();
 
-jest.mock('./components/Main', () => ({
-    fetchAPI: jest.fn(),
-    submitAPI: jest.fn()
-}));
+  const reserveButton = screen.getByRole("button", { name: /Reserve A Table/i });
+  fireEvent.click(reserveButton);
 
-// Import the mocked functions
-// import { fetchAPI, submitAPI } from './components/Main';
-
-
-const mockFetchAPI = jest.fn();
-
-beforeEach(() => {
-    jest.clearAllMocks(); 
+  const headingElementNew = screen.getByText("FIND A TABLE FOR ANY OCCASION");
+  expect(headingElementNew).toBeInTheDocument();
 });
 
-// Test for the initial available times
-test('initializeTimes sets the correct initial available times', async () => {
-   
-    mockFetchAPI.mockImplementation(() => ['17:00', '18:00']);
+test('Initialize/Update Times', () => {
+  render(
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  );
 
-    // Render the Main component
-    render(<Main />);
+  const reserveButton = screen.getByRole("button", { name: /Reserve A Table/i });
+  fireEvent.click(reserveButton);
 
-    // Wait for the component to update with the mock data
-    await waitFor(() => {
-        // Adjust this if necessary to match the actual rendered output
-        expect(screen.getByText('17:00')).toBeInTheDocument();
-        expect(screen.getByText('18:00')).toBeInTheDocument();
-    });
-});
+  const dateInput = screen.getByLabelText(/Pick Date:/i);
+  fireEvent.change(dateInput, { target: { value: '2024-08-15' } });
 
-
-test('updateTimes updates the available times based on selected date', async () => {
-   
-    mockFetchAPI.mockImplementation((date) => {
-        if (date === '2024-07-25') return ['19:00', '20:00'];
-        return [];
-    });
-
-    
-    render(<Main />);
-
-    
-    const newDate = '2024-07-25';
-    await act(async () => {
-        
-        const updateTimes = screen.getByTestId('update-times'); // Adjust based on implementation
-        await updateTimes(newDate); // Ensure this matches your test setup
-    });
-
-    // Check that the available times have been updated
-    await waitFor(() => {
-        
-        expect(screen.getByText('19:00')).toBeInTheDocument();
-        expect(screen.getByText('20:00')).toBeInTheDocument();
-    });
+  const timeOptions = screen.getByLabelText(/Choose Time:/i);
+  const timeOptionsArray = Array.from(timeOptions.options).map(option => option.value);
+  
+ 
+  
+  expect(timeOptionsArray).toEqual(expect.arrayContaining([
+    '17:00', '17:30', '18:00', '18:30', '19:00', '19:30', '20:00', '20:30', '21:00', '21:30', '22:00', '22:30', '23:00'
+  ]));
 });

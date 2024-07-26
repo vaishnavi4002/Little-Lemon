@@ -1,9 +1,8 @@
-import React, { useState } from "react";
-import PropTypes from 'prop-types';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import * as Yup from 'yup';
-
-const Booking = ({ availableTimes, dispatch, submitForm }) => {
+import PropTypes from 'prop-types';
+const BookingForm = (props) => {
     const [date, setDate] = useState("");
     const [time, setTime] = useState("");
     const [numOfGuests, setNumOfGuests] = useState(1);
@@ -11,13 +10,16 @@ const Booking = ({ availableTimes, dispatch, submitForm }) => {
 
     const handleDateChange = (e) => {
         setDate(e.target.value);
-        dispatch(e.target.value);
+        props.dispatch(e.target.value);
     };
-
+    const submitAPI = function(formData) {
+        console.log(formData)
+        return true;
+    };
     const handleSubmit = async (e) => {
         e.preventDefault();
         const values = { date, time, numOfGuests, occasion };
-
+        
         const schema = Yup.object().shape({
             date: Yup.string().required('Date is required'),
             time: Yup.string().required('Time is required'),
@@ -30,7 +32,7 @@ const Booking = ({ availableTimes, dispatch, submitForm }) => {
         const isValid = await schema.isValid(values);
 
         if (isValid) {
-            const success = await submitForm(values);
+            const success = submitAPI(values);
             if (success) {
                 console.log('Booking successful');
             } else {
@@ -71,7 +73,7 @@ const Booking = ({ availableTimes, dispatch, submitForm }) => {
                             id="time"
                         >
                             <option value="">Select a Time</option>
-                            {availableTimes.map(time => (
+                            {props.availableTimes.map(time => (
                                 <option key={time} value={time}>{time}</option>
                             ))}
                         </select>
@@ -110,18 +112,17 @@ const Booking = ({ availableTimes, dispatch, submitForm }) => {
                         className="bg-[#F4CE14] text-white p-2 mt-4 rounded-md hover:bg-[hsl(50,92%,42%)]"
                         type="submit"
                     >
-                        <Link to="/confirmed" className="text-white">Confirm Booking</Link>
+                        <Link to="/booking/confirmed" className="text-white">Confirm Booking</Link>
                     </button>
                 </form>
             </div>
         </div>
     );
 };
-
-Booking.propTypes = {
+BookingForm.propTypes = {
     dispatch: PropTypes.func.isRequired,
     availableTimes: PropTypes.arrayOf(PropTypes.string).isRequired,
-    submitForm: PropTypes.func.isRequired,
 };
 
-export default Booking;
+
+export default BookingForm;
