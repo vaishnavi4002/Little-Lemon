@@ -1,6 +1,7 @@
 
 import logo from  "../assets/images/logo.jpg"
 import {Link} from 'react-router-dom';
+
 const Navbar = () => {
   return (
     <div>
@@ -15,8 +16,11 @@ const Navbar = () => {
         <Link to="/">Home</Link>
         </li>
         <li>
-        <Link to="/">Menu</Link>
+        <Link to="about" smooth={true}
+            duration={500}
+            className=" cursor-pointer">About</Link>
         </li>
+        
         <li>
         <Link to="/">Menu</Link>
         </li>
