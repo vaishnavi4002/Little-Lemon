@@ -1,7 +1,6 @@
 import  { useReducer } from "react";
 import {  Route, Routes, useNavigate } from "react-router-dom";
 import Booking from "./Booking";
-import HomePage from "./HomePage";
 import BookingConfirmed from "./BookingConfirmed";
 
 const Main = () => {
