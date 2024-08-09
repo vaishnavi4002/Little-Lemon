@@ -3,11 +3,11 @@ import react from '@vitejs/plugin-react';
 import { visualizer } from 'rollup-plugin-visualizer';
 
 export default defineConfig({
-  base: "/",
+  base: "/Little-Lemon/",
   plugins: [
     react(),
     visualizer({
-      open: true, // This will automatically open the visualization in the browser after the build
+      open: true, 
     }),
   ],
   build: {
