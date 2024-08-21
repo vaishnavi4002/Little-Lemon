@@ -1,6 +1,6 @@
-import  { useState } from "react";
+import { useState } from "react";
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 
 const Booking = ({ availableTimes, dispatch, submitForm }) => {
@@ -8,6 +8,9 @@ const Booking = ({ availableTimes, dispatch, submitForm }) => {
     const [time, setTime] = useState("");
     const [numOfGuests, setNumOfGuests] = useState(1);
     const [occasion, setOccasion] = useState("");
+    const [errors, setErrors] = useState({});
+
+    const navigate = useNavigate();
 
     const handleDateChange = (e) => {
         setDate(e.target.value);
@@ -27,17 +30,22 @@ const Booking = ({ availableTimes, dispatch, submitForm }) => {
                 .max(10, 'Cannot be more than 10 guests'),
         });
 
-        const isValid = await schema.isValid(values);
-
-        if (isValid) {
+        try {
+            await schema.validate(values, { abortEarly: false });
             const success = await submitForm(values);
             if (success) {
-                console.log('Booking successful');
+                navigate("/confirmed");
             } else {
                 console.log('Booking failed');
             }
-        } else {
-            console.log('Validation failed');
+        } catch (error) {
+            if (error instanceof Yup.ValidationError) {
+                const newErrors = error.inner.reduce((acc, curr) => {
+                    acc[curr.path] = curr.message;
+                    return acc;
+                }, {});
+                setErrors(newErrors);
+            }
         }
     };
 
@@ -59,6 +67,7 @@ const Booking = ({ availableTimes, dispatch, submitForm }) => {
                             name="date"
                             id="date"
                         />
+                        {errors.date && <p className="text-red-500">{errors.date}</p>}
                     </div>
 
                     <div className="flex flex-col">
@@ -75,6 +84,7 @@ const Booking = ({ availableTimes, dispatch, submitForm }) => {
                                 <option key={time} value={time}>{time}</option>
                             ))}
                         </select>
+                        {errors.time && <p className="text-red-500">{errors.time}</p>}
                     </div>
 
                     <div className="flex flex-col">
@@ -88,6 +98,7 @@ const Booking = ({ availableTimes, dispatch, submitForm }) => {
                             name="numOfGuests"
                             id="numOfGuests"
                         />
+                        {errors.numOfGuests && <p className="text-red-500">{errors.numOfGuests}</p>}
                     </div>
 
                     <div className="flex flex-col">
@@ -110,7 +121,7 @@ const Booking = ({ availableTimes, dispatch, submitForm }) => {
                         className="bg-[#F4CE14] text-white p-2 mt-4 rounded-md hover:bg-[hsl(50,92%,42%)]"
                         type="submit"
                     >
-                        <Link to="/confirmed" className="text-white">Confirm Booking</Link>
+                        Confirm Booking
                     </button>
                 </form>
             </div>
